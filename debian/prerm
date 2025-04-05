@@ -1,0 +1,7 @@
+#!/bin/sh
+
+systemctl stop systemd-binfmt.service
+
+rm -rf /etc/binfmt.d/i386.conf
+rm -rf /etc/binfmt.d/x86_64.conf
+rm -rf /etc/sysctl.d/mmap_min_addr.conf

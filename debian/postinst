@@ -1,0 +1,22 @@
+#!/bin/sh
+
+if [ ! -d "/etc/binfmt.d/" ];then
+        mkdir /etc/binfmt.d/
+fi
+
+if [ ! -d "/etc/sysctl.d/" ];then
+        mkdir /etc/sysctl.d/
+fi
+
+echo ":i386:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x03\x00:\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/latx-i386:" > /etc/binfmt.d/i386.conf
+
+echo ":x86_64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00:\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/latx-x86_64:C" > /etc/binfmt.d/x86_64.conf
+
+echo "vm.mmap_min_addr = 65536" > /etc/sysctl.d/mmap_min_addr.conf
+
+sysctl --system || true
+systemctl restart systemd-binfmt.service || true
+if [ -z "$2" ]; then
+	systemctl enable systemd-binfmt.service || true
+fi
+

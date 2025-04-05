@@ -1,0 +1,137 @@
+Source: lat
+Section: otherosfs
+Priority: optional
+Maintainer: gfdgd_xi <3025613752@qq.com>
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 13),
+ python3:any,
+ python3-venv:any,
+ python3:any (>> 3.11) | python3-tomli,
+ meson, ninja-build,
+ flex, bison,
+# for :native suffix see #995622
+ python3-sphinx:native, python3-sphinx-rtd-theme:native,
+# python3-pycotap:native,
+Build-Depends-Arch:
+# In comments below we also specify (system-specific) arguments
+# to qemu's configure script, -- optional features which depend
+# on build-dependencies.
+# always needed
+ pkgconf, libglib2.0-dev, zlib1g-dev,
+# target/hexagon/ builds a build-time (ie: native) tool using glib
+ pkgconf:native, libglib2.0-dev:native,
+# iasl (from acpica-tools) is used only in a single test these days, not for building
+# acpica-tools,
+# libcapstone is in universe in ubuntu
+# --enable-capstone
+ libcapstone-dev,
+# --enable-linux-aio	linux-any
+ libaio-dev            [linux-any],
+# libsndio is in universe in ubuntu
+# --disable-sndio
+# --audio-drv-list=pipewire,pa,alsa,jack,oss,sdl	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libjack-dev    [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+ libpulse-dev   [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+ libasound2-dev [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+ libpipewire-0.3-dev [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# for virtfs (now in libc6)
+# --enable-attr
+# --enable-bpf	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libbpf-dev	[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+## --enable-blkio	amd64 arm64 loong64 mips64 mips64el ppc64 ppc64el riscv64 s390x sparc64
+# libblkio-dev	       [amd64 arm64 loong64 mips64 mips64el ppc64 ppc64el riscv64 s390x sparc64],
+# --enable-brlapi	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libbrlapi-dev         [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-virtfs	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+# needed for virtfs
+# --enable-cap-ng	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libcap-ng-dev         [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-curl
+ libcurl4-gnutls-dev,
+# --enable-fdt	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libfdt-dev	[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-fuse		 linux-any
+ libfuse3-dev		[linux-any],
+# --enable-gnutls
+ gnutls-dev,
+# --enable-gtk --enable-vte	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libgtk-3-dev    [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+ libvte-2.91-dev [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-libiscsi
+ libiscsi-dev,
+# --enable-curses	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libncurses-dev        [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-virglrenderer	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libvirglrenderer-dev          [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-opengl	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libepoxy-dev [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+ libdrm-dev   [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+ libgbm-dev   [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-libnfs
+ libnfs-dev,
+# --enable-numa	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libnuma-dev   [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-smartcard	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libcacard-dev		[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-pixman	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libpixman-1-dev	[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-rbd		amd64 arm64 loong64 mips64el ppc64el riscv64 s390x
+ librbd-dev            [amd64 arm64 loong64 mips64el ppc64el riscv64 s390x],
+# gluster is 64bit-only: #1039604
+# --enable-glusterfs	 amd64 arm64 loong64 mips64 mips64el ppc64 ppc64el riscv64 s390x sparc64
+ libglusterfs-dev	[amd64 arm64 loong64 mips64 mips64el ppc64 ppc64el riscv64 s390x sparc64],
+# --enable-vnc-sasl	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libsasl2-dev		[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-sdl	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libsdl2-dev [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-seccomp	amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64 ppc64el powerpc riscv64 s390x
+ libseccomp-dev        [amd64 arm64 armel armhf i386 loong64 mips64el mipsel ppc64 ppc64el powerpc riscv64 s390x],
+# --enable-slirp	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libslirp-dev		[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-spice	 amd64 i386 arm64 armel armhf loong64 mips64el mipsel ppc64el riscv64
+ libspice-server-dev	[amd64 i386 arm64 armel armhf loong64 mips64el mipsel ppc64el riscv64],
+# --enable-rdma		linux-any
+ librdmacm-dev [linux-any], libibverbs-dev [linux-any], libibumad-dev [linux-any],
+# --enable-linux-io-uring	linux-any
+ liburing-dev                  [linux-any],
+# --enable-libusb	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libusb-1.0-0-dev      [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-usb-redir	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libusbredirparser-dev [amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-libssh
+ libssh-dev,
+# --enable-zstd
+ libzstd-dev,
+# vde is debian-only since ubuntu/vde2 is in universe
+# --enable-vde	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libvdeplug-dev	[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+ libxen-dev [linux-amd64],
+# --enable-nettle	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ nettle-dev		[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# other optional features we enable
+# --enable-libudev
+# needed for qga?
+ libudev-dev [linux-any],
+# --enable-vnc	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+# --enable-vnc-jpeg	amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libjpeg-dev	[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-png	 amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64
+ libpng-dev	[amd64 arm arm64 armel armhf i386 loong64 mips mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el riscv64 s390x sparc sparc64],
+# --enable-libpmem	amd64 arm64
+ libpmem-dev           [amd64 arm64],
+Build-Depends-Indep:
+# skiboot includes <openssl/something.h>
+ libssl-dev,
+ device-tree-compiler,
+Standards-Version: 4.6.2
+Homepage: http://loongnix.cn
+#Vcs-Browser: https://salsa.debian.org/debian/lat
+#Vcs-Git: https://salsa.debian.org/debian/lat.git
+
+Package: lat
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: Loongson Architecture Translator
+ Static binary for Loongson Architecture Translator

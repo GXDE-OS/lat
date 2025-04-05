@@ -1,0 +1,43 @@
+#!/usr/bin/make -f
+
+# See debhelper(7) (uncomment to enable).
+# Output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+
+# See FEATURE AREAS in dpkg-buildflags(1).
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# See ENVIRONMENT in dpkg-buildflags(1).
+# Package maintainers to append CFLAGS.
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# Package maintainers to append LDFLAGS.
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+
+%:
+	dh $@
+
+NUMJOBS := $(lastword 1 $(subst -j,,$(filter -j%,${MAKEFLAGS})))
+NINJA = ninja $(if $V,-v) -j${NUMJOBS}
+
+override_dh_auto_clean:
+	rm -rf build
+
+override_dh_auto_configure:
+	./configure --target-list=i386-linux-user --target-list=x86_64-linux-user --enable-latx \
+                --enable-guest-base-zero --disable-debug-info --optimize-O1 --static  \
+                --extra-ldflags=-ldl --disable-blobs --enable-kzt \
+                --disable-docs --enable-new-world
+
+override_dh_auto_build:
+	${NINJA} -C build
+
+override_dh_auto_install:
+	${NINJA} -C install
+
+# dh_make generated override targets.
+# This is an example for Cmake (see <https://bugs.debian.org/641051>).
+#override_dh_auto_configure:
+#	dh_auto_configure -- \
+#	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
